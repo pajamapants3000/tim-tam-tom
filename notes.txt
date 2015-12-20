@@ -1,0 +1,8 @@
+tim-tam-tom - Notes
+********************
+This should actually be pretty feasible with curses and my current knowledge.
+The 'X's are pretty straightforward, and the 'O's could just be like
+        O
+       O O
+        O
+
