@@ -5,4 +5,199 @@ The 'X's are pretty straightforward, and the 'O's could just be like
         O
        O O
         O
+This means each box needs to be at least 3x3; they should be square. Let's
+assume a 24x80 terminal; add an extra line for each border and we have a
+tic-tac-toe board of 5+4+4=14 cells square (that is, 14x14) which should fit
+just fine, leaving room for a header and info on the side.
+
+The header should be a simple title over the board in the center of the
+window. The side pane should have the names of the competitors, which has
+'x's and which has 'o's, and highlight whose turn it is.
+
+includes
+^^^^^^^^^
+form.h
+menu.h
+ncurses.h
+stdbool.h
+
+Macros
+^^^^^^^
+TTLLEN 80 (rename?)
+NAMLEN 20 (rename?)
+GAMEBOARD_POSY
+GAMEBOARD_POSX
+WELCOME (message)
+WINGAME (message)
+LOSGAME (message)
+GOODBYE (message)
+BEG_INPUT_NAME (see st by suckless - args.h)
+END_INPUT_NAME (see st by suckless - args.h)
+START_TURN ""
+END_TURN ""
+
+
+// Square representations (0, 1, 2) X (0, 1, 2)
+_0_x_0_ (1 << 0)
+_0_x_1_ (1 << 1)
+_0_x_2_ (1 << 2)
+_1_x_0_ (1 << 3)
+_1_x_1_ (1 << 4)
+_1_x_2_ (1 << 5)
+_2_x_0_ (1 << 6)
+_2_x_1_ (1 << 7)
+_2_x_2_ (1 << 8)
+
+// Wins
+WIN_ROW0 ((1 << 0) | (1 << 1) | (1 << 2))
+WIN_ROW1 ((1 << 3) | (1 << 4) | (1 << 5))
+WIN_ROW2 ((1 << 6) | (1 << 7) | (1 << 8))
+WIN_COL0 ((1 << 0) | (1 << 3) | (1 << 6))
+WIN_COL1 ((1 << 1) | (1 << 4) | (1 << 7))
+WIN_COL2 ((1 << 2) | (1 << 5) | (1 << 8))
+WIN_DGDR ((1 << 0) | (1 << 4) | (1 << 8))
+WIN_DGUR ((1 << 2) | (1 << 4) | (1 << 6))
+
+
+
+data types
+^^^^^^^^^^^
+short playerA_markers, playerB_markers;
+typedef unsigned char byte; // Not sure this is needed
+typedef unsigned short squares;
+struct player
+{
+    char name[NAMLEN];
+    bool claim;             // 0 for O, 1 for X;
+    bool my_turn;
+    squares turns_taken;
+} playerX, playerO;
+
+Function list
+^^^^^^^^^^^^^^
+Logic:
+void whoareyou(struct player player);   // first signer takes Xs
+bool take_turn(struct player player);   // returns 1 for game over
+bool check_for_win(squares turns_taken); // WIN & TURNS = 0 => WIN!
+// getyx_by_square: stores the y and x positions of the upper-left-most cell
+//+of the given square, expressed in our square notation; e.g. _1_x_0_
+void getyx_by_square(squares square, int* row, int* col);
+
+Presentation:
+// draw 3x3 board, with or without numbered squares. I think the numbers will
+//+go best in the center; the X can leave the center cell out and let the
+//+number be a part of it.
+void draw_board(bool numbered);
+void draw_title(char title[TTLLEN]);
+void draw_pane(struct player playerX, struct player playerO);
+
+// draw_form: this will probably need to return a pointer to the form, field,
+//+or some other connection to allow processing outside the function; to avoid
+//+the form being local, it may need to be defined initially outside the
+//+function and passed in (perhaps a simple exercise to familiarize myself
+//+with forms would be a good idea - though this is a pretty simple case!
+FORM* draw_form(int y, int x, int h, int w, char mesg[])
+
+void draw_mesg(int y, int x, int h, int w, char mesg[])
+void leave_mark(unsigned short position, bool claim);
+void opening_animation(char message[]);
+
+***************************************
+main
+^^^^^
+10-Opening animation (frilly - can add in later)
+20-Welcome/message
+30-Prompt for username -> X
+35-Prompt for username -> O
+Begin loop
+40-Draw screen - title, board, pane/info, highlight playerX
+    ... pane shows instructions as well, press key 1-9 to choose square
+Begin loop
+60-Turn
+80-Check for win
+90-Check for stalemate
+Break on win or stalemate
+100-Change player
+End loop
+110-Announce winner, bash loser
+120-Play again?
+If no, break
+End loop
+130-Say Goodbye
+
+****************************************
+20)
+define opening message string
+draw basic outline of gameboard
+    draw_title(char title[])
+    draw_board(bool numbered)
+
+draw window with message - takes size and message
+    draw_mesg(int y, int x, int h, int w, char mesg[])
+    wait for input - main
+clear window/text, draw over it
+    draw_title(char title[])
+    draw_board(bool numbered)
+
+30)
+draw window and message; form with entry for name
+    draw_form
+    ?loop - require input passes check
+    event loop... use the switch-loop macro per suckless?
+    ?check input
+    ?end loop
+initialize struct player playerX with name
+welcome the player
+    draw_mesg(int y, int x, int h, int w, char mesg[])
+
+35)
+repeat 30 with results going to playerO
+
+40)
+draw title
+draw board, complete with numbered squares (?)
+    draw_title(char title[])
+    draw_board(bool numbered)
+draw pane
+    void draw_pane(struct player playerX, struct player playerO);
+
+60)
+BEGIN_TURN
+wait for turn/input
+    process_input(char input, struct player playerX, struct player playerO);
+        based on available moves, test input for valid move
+        all_moves = xmoves | omoves
+        bool check_valid_move(char input, unsigned short all_moves)
+        if so...
+            update turns_taken/num_turns
+            void leave_mark(unsigned short position, bool claim);
+            switch turns
+            return 0
+        if not
+            display warning:
+                draw_mesg(int y, int x, int h, int w, char mesg[])
+            return 1
+if returned 1 - continue
+80)
+test for win
+    bool check_for_win(unsigned short turns_taken); // WIN & TURNS = 0 => WIN!
+if yes, break from TURN
+
+90)
+test for stalemate
+    bool check_for_stale(unsigned short turns_taken_x,
+        unsigned short turns_taken_y);
+                    // TURNSX | TURNSY == ((1 << 9) - 1) => STALEMATE!
+    or just pass number of turns?
+if yes, break from TURN
+END_TURN
+
+110)
+draw window with message again
+
+120)
+draw messsage again - play again? y/n - take input
+
+130)
+draw messsage again  - say goodbye
 
