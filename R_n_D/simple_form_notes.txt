@@ -1,0 +1,17 @@
+The trick here is to do all of the work creating the form in a separate
+function (that's the intended approach in the game). Separate functions or
+macros may be used to process the interaction, the submitted value, etc.
+Validation confuses me -- seems like its automatic. let's play with it and
+find out!
+
+main
+*****
+char username[];
+initialize curses
+draw_form()
+LOOP
+process_input(ch); return 1 on complete/proceed
+set_name;
+LOOP
+draw_mesg(char username[]);
+
