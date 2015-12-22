@@ -1,7 +1,6 @@
-// simple_form.c
-// A simple form is presented to the user, asking for their name; once
-//+they have submitted an acceptable string, a message says hi and then the
-//+program exits.
+// simple_form_amalgamated.c
+// simple_form.c, but putting all of the code in to main, since the current
+//+approach isn't working.
 
 #include <ncurses.h>
 #include <form.h>
@@ -225,3 +224,4 @@ void free_mem(struct Prompt* Prompt_for_Name)/*{{{*/
         free_field(*(Prompt_for_Name->fields + i));
 }
 /*}}}*/
+

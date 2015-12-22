@@ -6,12 +6,27 @@ find out!
 
 main
 *****
+data:
 char username[];
+FIELD** fields
+FORM* prompt_for_name
+WINDOW* form_win
+WINDOW* form_subwin
+
+logic:
 initialize curses
-draw_form()
+draw_form() - pass fields, prompt_for_name, form_win, form_subwin
+    set_fields - pass fields
+    set_field_attrs - pass fields
+    create_form - pass fields, prompt_for_name (a one-liner?)
+    create_win_subwin - pass prompt_for_name, form_win, form_subwin
+    set_win_subwin_attrs - pass form_win, form_subwin
+    display form window
 LOOP
 process_input(ch); return 1 on complete/proceed
-set_name;
+validation?
 LOOP
+set_name;
+free_mem
 draw_mesg(char username[]);
 

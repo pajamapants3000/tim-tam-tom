@@ -14,6 +14,8 @@ The header should be a simple title over the board in the center of the
 window. The side pane should have the names of the competitors, which has
 'x's and which has 'o's, and highlight whose turn it is.
 
+SOME OF THESE names need rethinking
+
 includes
 ^^^^^^^^^
 form.h
@@ -23,8 +25,8 @@ stdbool.h
 
 Macros
 ^^^^^^^
-TTLLEN 80 (rename?)
-NAMLEN 20 (rename?)
+TTLLEN 80
+NAMLEN 20
 GAMEBOARD_POSY
 GAMEBOARD_POSX
 WELCOME (message)
@@ -62,23 +64,27 @@ WIN_DGUR ((1 << 2) | (1 << 4) | (1 << 6))
 
 data types
 ^^^^^^^^^^^
-short playerA_markers, playerB_markers;
-typedef unsigned char byte; // Not sure this is needed
-typedef unsigned short squares;
-struct player
+typedef unsigned short squares;     // at least 2 bytes; need 9 bits to
+                                    //+represent the 9 possible squares in any
+                                    //+possible combination
+struct player_struct
 {
     char name[NAMLEN];
-    bool claim;             // 0 for O, 1 for X;
+    bool mark;             // 0 for O, 1 for X;
     bool my_turn;
-    squares turns_taken;
+    squares markers;
 } playerX, playerO;
+typedef struct player-struct Player;
 
 Function list
 ^^^^^^^^^^^^^^
 Logic:
-void whoareyou(struct player player);   // first signer takes Xs
-bool take_turn(struct player player);   // returns 1 for game over
-bool check_for_win(squares turns_taken); // WIN & TURNS = 0 => WIN!
+void whoareyou(Player player);   // first signer takes Xs
+bool take_turn(Player player);   // returns 1 for game over
+bool check_for_win(squares player_marks); // WIN & TURNS = 0 => WIN!
+bool check_for_stalemate(squares occupied);
+                    // TURNSX | TURNSY == ((1 << 9) - 1) => STALEMATE!
+bool is_valid_move(char input, squares occupied)
 // getyx_by_square: stores the y and x positions of the upper-left-most cell
 //+of the given square, expressed in our square notation; e.g. _1_x_0_
 void getyx_by_square(squares square, int* row, int* col);
@@ -89,7 +95,7 @@ Presentation:
 //+number be a part of it.
 void draw_board(bool numbered);
 void draw_title(char title[TTLLEN]);
-void draw_pane(struct player playerX, struct player playerO);
+void draw_pane(Player playerX, Player playerO);
 
 // draw_form: this will probably need to return a pointer to the form, field,
 //+or some other connection to allow processing outside the function; to avoid
@@ -99,7 +105,7 @@ void draw_pane(struct player playerX, struct player playerO);
 FORM* draw_form(int y, int x, int h, int w, char mesg[])
 
 void draw_mesg(int y, int x, int h, int w, char mesg[])
-void leave_mark(unsigned short position, bool claim);
+void leave_mark(unsigned short position, bool mark);
 void opening_animation(char message[]);
 
 ***************************************
@@ -146,7 +152,7 @@ draw window and message; form with entry for name
     event loop... use the switch-loop macro per suckless?
     ?check input
     ?end loop
-initialize struct player playerX with name
+initialize Player playerX with name
 welcome the player
     draw_mesg(int y, int x, int h, int w, char mesg[])
 
@@ -159,18 +165,18 @@ draw board, complete with numbered squares (?)
     draw_title(char title[])
     draw_board(bool numbered)
 draw pane
-    void draw_pane(struct player playerX, struct player playerO);
+    void draw_pane(Player playerX, Player playerO);
 
 60)
 BEGIN_TURN
 wait for turn/input
-    process_input(char input, struct player playerX, struct player playerO);
+    process_input(char input, Player playerX, Player playerO);
         based on available moves, test input for valid move
         all_moves = xmoves | omoves
         bool check_valid_move(char input, unsigned short all_moves)
         if so...
             update turns_taken/num_turns
-            void leave_mark(unsigned short position, bool claim);
+            void leave_mark(unsigned short position, bool mark);
             switch turns
             return 0
         if not
