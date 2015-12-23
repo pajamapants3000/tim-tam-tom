@@ -1,0 +1,9 @@
+# List of files for git to ignore
+#*********************************
+.git
+*.swp
+R_n_D/draw_board
+R_n_D/player_move
+R_n_D/simple_form
+R_n_D/simpler_form
+

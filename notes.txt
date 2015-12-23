@@ -73,14 +73,14 @@ struct player_struct
     bool mark;             // 0 for O, 1 for X;
     bool my_turn;
     squares markers;
-} playerX, playerO;
-typedef struct player-struct Player;
+} *playerX, *playerO;
+typedef struct player_struct Player;
 
 Function list
 ^^^^^^^^^^^^^^
 Logic:
-void whoareyou(Player player);   // first signer takes Xs
-bool take_turn(Player player);   // returns 1 for game over
+void whoareyou(Player* player);   // first signer takes Xs
+bool take_turn(Player* player);   // returns 1 for game over
 bool check_for_win(squares player_marks); // WIN & TURNS = 0 => WIN!
 bool check_for_stalemate(squares occupied);
                     // TURNSX | TURNSY == ((1 << 9) - 1) => STALEMATE!
@@ -102,6 +102,7 @@ void draw_pane(Player playerX, Player playerO);
 //+the form being local, it may need to be defined initially outside the
 //+function and passed in (perhaps a simple exercise to familiarize myself
 //+with forms would be a good idea - though this is a pretty simple case!
+// Completed and tested a similar form setup!
 FORM* draw_form(int y, int x, int h, int w, char mesg[])
 
 void draw_mesg(int y, int x, int h, int w, char mesg[])
@@ -177,6 +178,7 @@ wait for turn/input
         if so...
             update turns_taken/num_turns
             void leave_mark(unsigned short position, bool mark);
+                draw_X(int y_position, int x_position)
             switch turns
             return 0
         if not
