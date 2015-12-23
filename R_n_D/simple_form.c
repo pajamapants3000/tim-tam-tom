@@ -2,6 +2,7 @@
 // A simple form is presented to the user, asking for their name; once
 //+they have submitted an acceptable string, a message says hi and then the
 //+program exits.
+// UPDATE: FRICK YEAH! It works!
 
 #include <ncurses.h>
 #include <form.h>
@@ -11,11 +12,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define INI_NCRS initscr(); cbreak(); noecho();
+#define INI_NCRS initscr(); cbreak(); noecho(); refresh()
 
 #define MAXLEN 20
 #define NUM_FIELDS 2
-#define QUESTION "Hello! My name is Tommy,\nwhat's yours?"
+#define QUESTION "   Hi! I'm Tommy.     What's your name? "
+
+#define KB_ENTER 10     // KEY_ENTER doesn't work for some reason
 
 struct Prompt {
     FIELD** fields;
@@ -49,12 +52,14 @@ int main(void)
 
     Prompt_for_Name = draw_form();
 
-    while (!process_input(getch(), Prompt_for_Name->form))
+    while (!process_input(wgetch(Prompt_for_Name->form_win),
+                Prompt_for_Name->form))
         ;
 
     set_name_as_is(username, *(Prompt_for_Name->fields + 1));
 
     endwin();
+    printf("Nice to meet you, %s\n", username);
     return 0;
 }
 
@@ -96,7 +101,7 @@ bool process_input(chtype ch, FORM* prompt_for_name)/*{{{*/
     static unsigned short n = 0;    // number of characters entered
     static unsigned short pos = 0;  // cursor precedes last char by pos chars
 
-    if (isalpha(ch))
+    if (isalnum(ch))
     {
         form_driver(prompt_for_name, ch);
         ++n;
@@ -138,8 +143,21 @@ bool process_input(chtype ch, FORM* prompt_for_name)/*{{{*/
                 --pos;
             }
             break;
-        case KEY_ENTER:
-            return 1;
+        case KB_ENTER:
+            if (form_driver(prompt_for_name, REQ_VALIDATION)
+                    == E_INVALID_FIELD)
+            {
+                form_driver(prompt_for_name, REQ_CLR_FIELD);
+                form_driver(prompt_for_name, REQ_BEG_FIELD);
+                n = 0;
+                pos = 0;
+                move(1, 1);
+                printw("Error in entry, try again!");
+                refresh();
+                return 0;
+            }
+            else
+                return 1;
         default:
             break;
     }
@@ -159,6 +177,7 @@ struct Prompt* draw_form()/*{{{*/
     P4N_ptr->form_win = create_win(P4N_ptr->form, rows, cols);
     P4N_ptr->form_subwin = create_subwin(P4N_ptr->form,
             P4N_ptr->form_win, rows, cols);
+    set_win_subwin_attrs(P4N_ptr->form_win, P4N_ptr->form_subwin);
 
     post_form(P4N_ptr->form);
     wrefresh(P4N_ptr->form_win);
@@ -190,6 +209,8 @@ void set_field_attrs(FIELD** fields)/*{{{*/
 
     // this is where the user will enter their name
     set_field_just(*fields, JUSTIFY_LEFT);
+    set_field_back(*fields, A_UNDERLINE);
+    set_field_type(*fields, TYPE_ALPHA, 0);
 }
 /*}}}*/
 FORM* create_form(FIELD** fields)/*{{{*/
@@ -200,14 +221,14 @@ FORM* create_form(FIELD** fields)/*{{{*/
 /*}}}*/
 WINDOW* create_win(FORM* prompt_for_name, int rows, int cols)/*{{{*/
 {
-    WINDOW* form_win = newwin(rows + 4, cols + 4, 10, 8);
+    WINDOW* form_win = newwin(rows + 4, cols + 4, 2, 2);
     set_form_win(prompt_for_name, form_win);
     return form_win;
 }
 /*}}}*/
 WINDOW* create_subwin(FORM* prompt_for_name, WINDOW* form_win, int rows, int cols)/*{{{*/
 {
-    WINDOW* form_subwin = derwin(form_win, rows, cols, 2, 2);
+    WINDOW* form_subwin = derwin(form_win, rows, cols, 2, 1);
     set_form_sub(prompt_for_name, form_subwin);
     return form_subwin;
 }
@@ -215,7 +236,7 @@ WINDOW* create_subwin(FORM* prompt_for_name, WINDOW* form_win, int rows, int col
 void set_win_subwin_attrs(WINDOW* form_win, WINDOW* form_subwin)/*{{{*/
 {
     box(form_win, 0, 0);
-    wrefresh(form_win);
+    keypad(form_win, TRUE);
 }
 /*}}}*/
 void free_mem(struct Prompt* Prompt_for_Name)/*{{{*/
@@ -223,5 +244,8 @@ void free_mem(struct Prompt* Prompt_for_Name)/*{{{*/
     free_form(Prompt_for_Name->form);
     for (unsigned short i = 0; i < NUM_FIELDS; ++i)
         free_field(*(Prompt_for_Name->fields + i));
+    delwin(Prompt_for_Name->form_win);
+    delwin(Prompt_for_Name->form_subwin);
+    free(Prompt_for_Name);
 }
 /*}}}*/
