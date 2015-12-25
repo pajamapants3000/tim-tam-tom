@@ -95,6 +95,8 @@ Presentation:
 //+number be a part of it.
 void draw_board(bool numbered);
 void draw_title(char title[TTLLEN]);
+    NOTE: I've found that there is no reason to have a special draw_title
+    function; I can just use the same function used for displaying a message.
 void draw_pane(Player playerX, Player playerO);
 
 // draw_form: this will probably need to return a pointer to the form, field,
@@ -150,7 +152,7 @@ clear window/text, draw over it
 draw window and message; form with entry for name
     draw_form
     ?loop - require input passes check
-    event loop... use the switch-loop macro per suckless?
+    event loop... pass in letters or confirm
     ?check input
     ?end loop
 initialize Player playerX with name
@@ -177,8 +179,9 @@ wait for turn/input
         bool check_valid_move(char input, unsigned short all_moves)
         if so...
             update turns_taken/num_turns
-            void leave_mark(unsigned short position, bool mark);
+            void leave_mark(squares position, bool mark);
                 draw_X(int y_position, int x_position)
+                draw_O(int y_position, int x_position)
             switch turns
             return 0
         if not
@@ -188,7 +191,7 @@ wait for turn/input
 if returned 1 - continue
 80)
 test for win
-    bool check_for_win(unsigned short turns_taken); // WIN & TURNS = 0 => WIN!
+    bool check_for_win(unsigned short turns_taken); // WIN & TURNS = WIN => WIN!
 if yes, break from TURN
 
 90)
