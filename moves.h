@@ -78,28 +78,6 @@ bool is_valid_move(Player* playeX, Player* playerO, squares last_move);
  *********************************************************************/
 void update_turns(Player* playerX, Player* playerO, squares last_move);
 /*********************************************************************
- * leave_mark: given a pointer to the gameboard, board, the square   *
- *             chosen by the player, indicated by count from 0, and  *
- *             the mark associated with player who made the choice,  *
- *             calls either draw_X or draw_Y to draw the mark on the *
- *             gameboard.
- *********************************************************************/
-void leave_mark(WINDOW* board, int choice, bool mark);
-/*********************************************************************
- * draw_X: given a y_position and x_position relative to WINDOW      *
- *         pointed to by board, draws a large X, designated with 'X' *
- *         characters, fitting exactly in a square on the 3x3 board. *
- *         requires math.h (nearbyint); compile with -lm             *
- *********************************************************************/
-void draw_X(WINDOW* board, int y_position, int x_position);
-/*********************************************************************
- * draw_O: given a y_position and x_position relative to WINDOW      *
- *         pointed to by board, draws a large O, designated with 'O' *
- *         characters, fitting exactly in a square on the 3x3 board. *
- *         requires math.h (nearbyint); compile with -lm             *
- *********************************************************************/
-void draw_O(WINDOW* board, int y_position, int x_position);
-/*********************************************************************
  * square_dec_to_bin: takes a single integer (value from 0 to 8      *
  *                    inclusive); converts this value to the binary  *
  *                    mask representing this square and returns it   *
@@ -114,6 +92,4 @@ bool player_wins(Player* player);
  *                    determine if all possible moves have been made *
  *********************************************************************/
 bool reached_stalemate(Player* playerX, Player* playerO);
-void draw_board(WINDOW* board, int board_ystart, int board_xstart, bool numbered);
-void draw_numbers(WINDOW* board);
 /*}}}*/

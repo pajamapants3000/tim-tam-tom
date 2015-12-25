@@ -176,3 +176,27 @@ int print_player_info(WINDOW* pane_win, int text_y,
  *             macros COLOR_PAIR_MYTURN and COLOR_PAIR_WAITING;      *
  *********************************************************************/
 chtype turn_color(const Player* player);
+
+/*********************************************************************
+ * leave_mark: given a pointer to the gameboard, board, the square   *
+ *             chosen by the player, indicated by count from 0, and  *
+ *             the mark associated with player who made the choice,  *
+ *             calls either draw_X or draw_Y to draw the mark on the *
+ *             gameboard.
+ *********************************************************************/
+void leave_mark(WINDOW* board, int choice, bool mark);
+/*********************************************************************
+ * draw_X: given a y_position and x_position relative to WINDOW      *
+ *         pointed to by board, draws a large X, designated with 'X' *
+ *         characters, fitting exactly in a square on the 3x3 board. *
+ *         requires math.h (nearbyint); compile with -lm             *
+ *********************************************************************/
+void draw_X(WINDOW* board, int y_position, int x_position);
+/*********************************************************************
+ * draw_O: given a y_position and x_position relative to WINDOW      *
+ *         pointed to by board, draws a large O, designated with 'O' *
+ *         characters, fitting exactly in a square on the 3x3 board. *
+ *         requires math.h (nearbyint); compile with -lm             *
+ *********************************************************************/
+void draw_O(WINDOW* board, int y_position, int x_position);
+
