@@ -1,7 +1,7 @@
 /*
  * File   : moves.c
  * Program: tim-tam-tom
- * Purpose: logic - libraries
+ * Purpose: logic - lib
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
  */

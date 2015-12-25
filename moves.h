@@ -20,7 +20,7 @@
 #define _2_x_1_ (1 << 7)
 #define _2_x_2_ (1 << 8)
 
-// Wins
+// Winning square combinations
 #define WIN_ROW0 ((1 << 0) | (1 << 1) | (1 << 2))
 #define WIN_ROW1 ((1 << 3) | (1 << 4) | (1 << 5))
 #define WIN_ROW2 ((1 << 6) | (1 << 7) | (1 << 8))
@@ -29,26 +29,10 @@
 #define WIN_COL2 ((1 << 2) | (1 << 5) | (1 << 8))
 #define WIN_DGDR ((1 << 0) | (1 << 4) | (1 << 8))
 #define WIN_DGUR ((1 << 2) | (1 << 4) | (1 << 6))
+// array of all possible winning sets
 #define WINS { WIN_ROW0, WIN_ROW1, WIN_ROW2, WIN_COL0, WIN_COL1, WIN_COL2, \
     WIN_DGDR, WIN_DGUR }
 #define NUM_WINTYPES 8
-
-// macros to assist in creating X's and O's
-// f(x) for f proportional to x; take this and its negative to make the 'X'
-#define X_PLUSY(x, Y, X) ((((double) (Y-1)) / (X-1)) *\
-        abs(x))
-// positive values of f(x) for an ellipse centered at origin
-// vertical radius of Y, horizontal radius of X
-// NOTE: I toyed with the equation a bit; at least for the size I tested on,
-// raising the second term to 1.5 instead of 2 made a better shape.
-#define ELLIPSE_PLUSY(x, Y, X) (sqrt(pow((Y-1), 2) *\
-        (1 - (pow(((double) abs(x)) / (X-1), 1.5)))))
-
-// Error codes
-#define BOOKKEEPING_ERROR 83        // some stored data has impossible value
-
-// maximum name length
-#define NAMLEN   20     // maximum length for name (re-label?)
 
 // squares is a bitmask that is constructed by a set of squares on the board
 typedef unsigned short squares;

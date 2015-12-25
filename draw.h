@@ -8,7 +8,9 @@
  */
 
 #include <ncurses.h>
-#include "moves.h"
+#include "moves.h"                  // for Player
+#include "form_username.h"          // for NAME_MAXLEN
+
 
 
 // *gameboard dimensions*
@@ -29,6 +31,17 @@
 #define STEP_ALONG_CENTERS_X(i) (SQUARE_MIDX + \
         (SQUARE_DIMX * (i % BOARD_NUM_SQUARES_X)))
 // *                    *
+
+// macros to assist in creating X's and O's on the board
+// f(x) for f proportional to x; take this and its negative to make the 'X'
+#define X_PLUSY(x, Y, X) ((((double) (Y-1)) / (X-1)) * abs(x))
+//
+// positive values of f(x) for an ellipse centered at origin
+// vertical radius of Ry, horizontal radius of Rx
+// NOTE: I toyed with the parameters a bit; at least for the board size which
+// I tested, raising the second term to 1.5 instead of 2 made a better shape.
+#define ELLIPSE_PLUSY(x, Ry, Rx) (sqrt(pow((Ry-1), 2) *\
+        (1 - (pow(((double) abs(x)) / (Rx-1), 1.5)))))
 
 // message window
 #define MSG_WIN_H  8
@@ -77,8 +90,6 @@
 #define COLOR_WAITING_B COLOR_BLACK
 #define COLOR_DEFAULT_F COLOR_WHITE
 #define COLOR_DEFAULT_B COLOR_BLACK
-
-#define NAME_MAXLEN 20
 
 /*********************************************************************
  * draw_board: draws the tic-tac-toe 3x3 board, with optional        *

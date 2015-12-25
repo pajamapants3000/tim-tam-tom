@@ -1,7 +1,7 @@
 /*
  * File   : form.c
  * Program: tim-tam-tom
- * Purpose: form that prompts for username - library
+ * Purpose: form that prompts for username - lib
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
  */
@@ -10,7 +10,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "form.h"
+#include "form_username.h"
 
 int set_name(FIELD* field, char* username)/*{{{*/
 {

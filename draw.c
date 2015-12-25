@@ -1,7 +1,7 @@
 /*
  * File   : draw.c
  * Program: tim-tam-tom
- * Purpose: presentation macros, functions, and structures - library
+ * Purpose: presentation macros, functions, and structures - lib
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
  * Notes  : Link with -lm
