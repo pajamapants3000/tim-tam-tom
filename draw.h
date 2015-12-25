@@ -1,12 +1,15 @@
 /*
  * File   : draw_board.h
  * Program: tim-tam-tom
- * Purpose: Header for presentation macros, functions, and structures
+ * Purpose: presentation macros, functions, and structures - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
- * License: None!
+ * License: MIT -- See LICENSE
+ * Notes  : Link with -lm
  */
 
 #include <ncurses.h>
+#include "moves.h"
+
 
 // *gameboard dimensions*
 // defining macros
@@ -76,19 +79,6 @@
 #define COLOR_DEFAULT_B COLOR_BLACK
 
 #define NAME_MAXLEN 20
-
-// squares is a bitmask that is constructed by a set of squares on the board
-typedef unsigned short squares;
-// Player manages all attributes for a given player
-struct player_struct
-{
-    char* name;
-    bool mark;             // 0 for O, 1 for X;
-    bool is_my_turn;
-    unsigned int num_turns_taken;
-    squares markers;
-};
-typedef struct player_struct Player;
 
 /*********************************************************************
  * draw_board: draws the tic-tac-toe 3x3 board, with optional        *

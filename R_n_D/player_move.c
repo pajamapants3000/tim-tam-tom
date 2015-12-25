@@ -323,7 +323,7 @@ void draw_numbers(WINDOW* board)/*{{{*/
                     STEP_ALONG_CENTERS_X(i), '1' + i);
 }
 /*}}}*/
-bool player_wins(Player* player)
+bool player_wins(Player* player)/*{{{*/
 {
     squares winning_combinations[] = WINS;
 
@@ -335,8 +335,9 @@ bool player_wins(Player* player)
     }
     return false;
 }
-bool reached_stalemate(Player* playerX, Player* playerO)
+/*}}}*/
+bool reached_stalemate(Player* playerX, Player* playerO)/*{{{*/
 {
     return (playerX->markers | playerO->markers) == ((1 << 9) - 1);
 }
-
+/*}}}*/

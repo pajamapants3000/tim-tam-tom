@@ -266,14 +266,14 @@ void draw_board(WINDOW* board, bool numbered)/*{{{*/
 
 }
 /*}}}*/
-void draw_numbers(WINDOW* board)/*{{{*//*{{{*//*{{{*//*{{{*//*{{{*//*{{{*/
+void draw_numbers(WINDOW* board)/*{{{*/
 {
         for(short i = 0; i < 9; ++i)
             mvwaddch(board, STEP_ALONG_CENTERS_Y(i),
                     STEP_ALONG_CENTERS_X(i), '1' + i);
 }
 /*}}}*/
-void draw_msg_simple(WINDOW* msg_win, int msg_y, const char** message)
+void draw_msg_simple(WINDOW* msg_win, int msg_y, const char** message)/*{{{*/
 {
     box(msg_win, 0, 0);
 
@@ -284,7 +284,7 @@ void draw_msg_simple(WINDOW* msg_win, int msg_y, const char** message)
     wrefresh(msg_win);
 }
 /*}}}*/
-void draw_msg(WINDOW* msg_win, const char** message, chtype color)
+void draw_msg(WINDOW* msg_win, const char** message, chtype color)/*{{{*/
 {
     int msg_win_h, msg_win_w, msg_y = 1, msg_lines = 0;
 
@@ -307,7 +307,7 @@ void draw_msg(WINDOW* msg_win, const char** message, chtype color)
     wrefresh(msg_win);
 }
 /*}}}*/
-void print_xcenter(WINDOW* win, int y_pos, const char* string, chtype color)
+void print_xcenter(WINDOW* win, int y_pos, const char* string, chtype color)/*{{{*/
 {
     int length, x_pos, win_w;
     float temp;
@@ -328,7 +328,7 @@ void print_xcenter(WINDOW* win, int y_pos, const char* string, chtype color)
     wrefresh(win);
 }
 /*}}}*/
-void print_xcenter_w_pad(WINDOW* win, int y_pos, const char* string,
+void print_xcenter_w_pad(WINDOW* win, int y_pos, const char* string,/*{{{*/
         chtype color, int width)
 {
     char* padding = (char*) malloc((width) * sizeof(char));
@@ -342,7 +342,7 @@ void print_xcenter_w_pad(WINDOW* win, int y_pos, const char* string,
 
 }
 /*}}}*/
-void draw_pane(WINDOW* pane_win, const Player* playerX, const Player* playerO)
+void draw_pane(WINDOW* pane_win, const Player* playerX, const Player* playerO)/*{{{*/
 {
     int pane_win_h, text_y;
 

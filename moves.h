@@ -1,7 +1,7 @@
 /*
  * File   : player_move.h
  * Program: tim-tam-tom
- * Purpose: Header for macros and functions handling logic
+ * Purpose: logic - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
  */
@@ -50,10 +50,12 @@
 // maximum name length
 #define NAMLEN   20     // maximum length for name (re-label?)
 
+// squares is a bitmask that is constructed by a set of squares on the board
 typedef unsigned short squares;
+// Player manages all attributes for a given player
 struct player_struct
 {
-    char name[NAMLEN];
+    char* name;
     bool mark;             // 0 for O, 1 for X;
     bool is_my_turn;
     unsigned int num_turns_taken;
