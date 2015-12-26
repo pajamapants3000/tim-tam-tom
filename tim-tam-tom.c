@@ -25,15 +25,21 @@
                 playerO->num_turns_taken = 0;        \
                 playerX->is_my_turn = playerX->mark; \
                 playerO->is_my_turn = playerO->mark
-#define MSG_WELCOME { "Welcome 1", "Welcome 2", ""}
-#define MSG_TITLE { "Title 1", "Title 2", ""}
-#define MSG_WARNING { "Warning 1", "Warning 2", ""}
-#define MSG_GOODBYE { "Goodbye 1", "Goodbye 2", ""}
-#define MSG_WINNER { "Winner! 1", "Winner! 2", ""}
-#define MSG_STALE  { "Stalemate 1", "Stalemate 2", ""}
-#define MSG_PLAYAGAIN  { "Play", "Again?", ""}
+#define MSG_WELCOME { "Welcome to Tim-Tam-Tom...", \
+                      "Get ready to have FUN!!!",  \
+                      ""}
+#define MSG_TITLE {                                   \
+"  =======   =======      =======       ",            \
+"     |         | _          | _        ",            \
+"     |x|/\\ /\\ox|/ \\ |/\\ /\\ox|/o\\|/\\ /\\ ",    \
+"     |||  \\  \\ |\\_/\\|  \\  \\ |\\_/|  \\  \\", "" }
 
-void winner(Player* player);
+#define MSG_WARNING { "Uh-oh!", "You have pressed an invalid key.", ""}
+#define MSG_GOODBYE { "Thanks for playing...", "See you again soon!", ""}
+#define MSG_STALE  { "You're both out of moves...", " ", "Stalemate!", ""}
+#define MSG_PLAYAGAIN  { "Play", "Again?", "(press 'y'!)", ""}
+
+void winner(Player* winner, Player* loser);
 void stalemate();
 
 int main(void)
@@ -45,16 +51,16 @@ int main(void)
 
     INIT_PLAYER(playerX, 1);
     INIT_PLAYER(playerO, 0);
-    const char* msg_title[] = MSG_TITLE;
-    const char* msg_welcome[] = MSG_WELCOME;
-    const char* msg_goodbye[] = MSG_GOODBYE;
-    const char* msg_warning[] = MSG_WARNING;
+    const char* msg_title    [] = MSG_TITLE;
+    const char* msg_welcome  [] = MSG_WELCOME;
+    const char* msg_goodbye  [] = MSG_GOODBYE;
+    const char* msg_warning  [] = MSG_WARNING;
     const char* msg_playagain[] = MSG_PLAYAGAIN;
 
     INIT_CURS;
     init_pair(COLOR_PAIR_NUM_DEFAULT, COLOR_DEFAULT_F, COLOR_DEFAULT_B);
-    init_pair(COLOR_PAIR_NUM_TITLE, COLOR_TITLE_F, COLOR_TITLE_B);
-    init_pair(COLOR_PAIR_NUM_MYTURN, COLOR_MYTURN_F, COLOR_MYTURN_B);
+    init_pair(  COLOR_PAIR_NUM_TITLE,   COLOR_TITLE_F,   COLOR_TITLE_B);
+    init_pair( COLOR_PAIR_NUM_MYTURN,  COLOR_MYTURN_F,  COLOR_MYTURN_B);
     init_pair(COLOR_PAIR_NUM_WAITING, COLOR_WAITING_F, COLOR_WAITING_B);
     init_pair(COLOR_PAIR_NUM_WARNING, COLOR_WARNING_F, COLOR_WARNING_B);
 
@@ -88,7 +94,8 @@ int main(void)
     while ((input = getch()))
     {
         // (input - '1') converts 1-9 char to 0-8 int
-        if (is_valid_move(playerX, playerO, square_dec_to_bin(input - '1')))
+        if ('1' <= input && input <= '9' &&
+            is_valid_move(playerX, playerO, square_dec_to_bin(input - '1')))
         {
             leave_mark(board, input - '1', playerX->is_my_turn ? \
                     playerX->mark : playerO->mark);
@@ -107,7 +114,8 @@ int main(void)
         // NOTE: last player to move now has is_my_turn == false
         if (player_wins(playerX->is_my_turn ? playerO : playerX))
         {
-            winner(playerX->is_my_turn ? playerO : playerX);
+            winner(playerX->is_my_turn ? playerO : playerX,
+                   playerX->is_my_turn ? playerX : playerO);
             break;
         }
         else if (reached_stalemate(playerX, playerO))
@@ -137,12 +145,33 @@ int main(void)
     return 0;
 }
 
-void winner(Player* player)
+void winner(Player* winner, Player* loser)
 {
     WINDOW* msg_win;
-    const char* msg_winner[] = MSG_WINNER;
+    char* msg_winner[5];
+    const char* msg_winner0 = "Winner!";
+
+    // ACH!  -- I need to find a neater way!
+    /*  *   *   *   *   *   *   *   *   *   *   */
+    msg_winner[0] = (char*) malloc(8 * sizeof(char));
+    msg_winner[0] = (char*) msg_winner0;
+    msg_winner[1] = (char*) malloc(2 * sizeof(char));
+    msg_winner[1][0] = ' ';
+    msg_winner[1][1] = NUL;
+    msg_winner[2] = (char*) malloc((8 + NAME_MAXLEN) * sizeof(char));
+    sprintf(msg_winner[2], "%s kicked", winner->name);
+    msg_winner[3] = (char*) malloc((11 + NAME_MAXLEN) * sizeof(char));
+    sprintf(msg_winner[3], "%s's butt!!!", loser->name);
+    msg_winner[4] = (char*) malloc(1 * sizeof(char));
+    msg_winner[4][0] = NUL;
+    /*  *   *   *   *   *   *   *   *   *   *   */
+    // I made a mess creating the message, may as well show it:
     msg_win   = newwin(  MSG_WIN_H,   MSG_WIN_W,   MSG_WIN_Y,   MSG_WIN_X);
-    draw_msg(msg_win, msg_winner, COLOR_PAIR_DEFAULT);
+    draw_msg(msg_win, (const char**) msg_winner, COLOR_PAIR_DEFAULT);
+    wrefresh(msg_win);
+    PRESS_ANY_KEY;
+    delwin(msg_win);
+    refresh();
 }
 void stalemate()
 {
@@ -150,4 +179,7 @@ void stalemate()
     const char* msg_stale[] = MSG_STALE;
     msg_win   = newwin(  MSG_WIN_H,   MSG_WIN_W,   MSG_WIN_Y,   MSG_WIN_X);
     draw_msg(msg_win, msg_stale, COLOR_PAIR_DEFAULT);
+    PRESS_ANY_KEY;
+    delwin(msg_win);
+    refresh();
 }

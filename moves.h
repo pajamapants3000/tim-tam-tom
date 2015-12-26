@@ -14,15 +14,15 @@
 #include <ncurses.h>
 
 // Square representations y(0, 1, 2) X x(0, 1, 2)
-#define _0_x_0_ (1 << 0)
-#define _0_x_1_ (1 << 1)
-#define _0_x_2_ (1 << 2)
+#define _2_x_0_ (1 << 0)
+#define _2_x_1_ (1 << 1)
+#define _2_x_2_ (1 << 2)
 #define _1_x_0_ (1 << 3)
 #define _1_x_1_ (1 << 4)
 #define _1_x_2_ (1 << 5)
-#define _2_x_0_ (1 << 6)
-#define _2_x_1_ (1 << 7)
-#define _2_x_2_ (1 << 8)
+#define _0_x_0_ (1 << 6)
+#define _0_x_1_ (1 << 7)
+#define _0_x_2_ (1 << 8)
 
 // Winning square combinations
 #define WIN_ROW0 ((1 << 0) | (1 << 1) | (1 << 2))

@@ -15,14 +15,15 @@
 
 // form window
 // size beyond enclosed form/subwindow
-#define FORM_WIN_dH 4
-#define FORM_WIN_dW 4
+#define FORM_WIN_dH 10
+#define FORM_WIN_dW 10
 // position of form window
-#define FORM_WIN_Y 2
-#define FORM_WIN_X 2
+#define FORM_WIN_Y 10
+#define FORM_WIN_X ((COLS  - FORM_WIN_dW - NAME_MAXLEN - 2) / 2)
 // placement of form/subwindow within form window
+//#define FORM_SUBWIN_Y (FORM_WIN_dH / 2)
 #define FORM_SUBWIN_Y 2
-#define FORM_SUBWIN_X 1
+#define FORM_SUBWIN_X (FORM_WIN_dW / 2)
 // NOTE: may want FORM_WIN_dH = 2 * FORM_SUBWIN_Y; similar for dW/X
 
 #define KB_ENTER 10     // KEY_ENTER doesn't work for some reason
@@ -30,7 +31,7 @@
 
 // form
 #define NUM_FIELDS 2
-#define QUESTION "   Hi! I'm Tommy.     What's your name? "
+#define QUESTION "   Hi! I'm Tom.       What's your name? "
 #define NAME_MAXLEN 20
 
 struct Prompt {

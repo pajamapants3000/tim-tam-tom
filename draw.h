@@ -29,13 +29,14 @@
 #define BOARD_X (((COLS  - (BOARD_W + PANE_WIN_W)) / 2) + PANE_WIN_W)
 #define SQUARE_MIDX (SQUARE_DIMX / 2)
 #define SQUARE_MIDY (SQUARE_DIMY / 2)
-#define STEP_ALONG_CENTERS_Y(i) (SQUARE_MIDY + \
-        (SQUARE_DIMY * (i / BOARD_NUM_SQUARES_Y)))
+#define STEP_ALONG_CENTERS_Y(i) (BOARD_H - 1 - (SQUARE_MIDY + \
+        (SQUARE_DIMY * (i / BOARD_NUM_SQUARES_Y))))
 #define STEP_ALONG_CENTERS_X(i) (SQUARE_MIDX + \
         (SQUARE_DIMX * (i % BOARD_NUM_SQUARES_X)))
 // *                    *
 
-// macros to assist in creating X's and O's on the board
+/* macros to assist in creating X's and O's on the board    */
+/************************************************************/
 // f(x) for f proportional to x; take this and its negative to make the 'X'
 #define X_SLOPE ((double) (SQUARE_DIMY - 1) / (SQUARE_DIMX - 1))
 #define X_PLUSY(x, Y, X) ((((double) (Y-1)) / (X-1)) * abs(x))
@@ -45,12 +46,16 @@
 // NOTE: I toyed with the parameters a bit; at least for the board size which
 // I tested, raising the second term to 1.5 instead of 2 made a better shape.
 #define ELLIPSE_PLUSY(x, Ry, Rx) (sqrt(pow((Ry-1), 2) *\
-        (1 - (pow(((double) abs(x)) / (Rx-1), 1.5)))))
+        (1 - (pow(((double) abs(x)) / (Rx-1), 1.2)))))
+/************************************************************/
+// Here are the explicit point versions:
+#define X_PLUS {}
 
 // message window
 #define MSG_WIN_H  8
 #define MSG_WIN_W 40
-#define MSG_WIN_Y ((LINES - MSG_WIN_H) / 2)
+//#define MSG_WIN_Y ((LINES - MSG_WIN_H) / 2)
+#define MSG_WIN_Y 10
 #define MSG_WIN_X ((COLS  - MSG_WIN_W) / 2)
 #define MESSAGE { "Hello, and welcome to the message!",\
                   "This is line two of the message.",\
@@ -73,7 +78,9 @@
 // title window
 #define TITLE_WIN_H 10
 #define TITLE_WIN_W (BOARD_W + PANE_WIN_W)
-#define TITLE_WIN_Y ((LINES - (BOARD_H + TITLE_WIN_H)) / 2)
+// this value centers the board vertically
+//#define TITLE_WIN_Y ((LINES - (BOARD_H + TITLE_WIN_H)) / 2)
+#define TITLE_WIN_Y 2
 #define TITLE_WIN_X PANE_WIN_X
 #define TITLE_YSTART 2
 #define TITLE { "Hello, and welcome to the title!",\
@@ -92,7 +99,7 @@
 #define COLOR_PAIR_MYTURN  COLOR_PAIR(COLOR_PAIR_NUM_MYTURN)
 #define COLOR_PAIR_WAITING COLOR_PAIR(COLOR_PAIR_NUM_WAITING)
 #define COLOR_PAIR_WARNING COLOR_PAIR(COLOR_PAIR_NUM_WARNING)
-#define COLOR_MYTURN_F  COLOR_MAGENTA
+#define COLOR_MYTURN_F  COLOR_BLACK
 #define COLOR_MYTURN_B  COLOR_BLUE
 #define COLOR_WAITING_F COLOR_WHITE
 #define COLOR_WAITING_B COLOR_BLACK
@@ -100,7 +107,7 @@
 #define COLOR_DEFAULT_B COLOR_BLACK
 #define COLOR_TITLE_F COLOR_WHITE
 #define COLOR_TITLE_B COLOR_BLACK
-#define COLOR_WARNING_F COLOR_BLACK
+#define COLOR_WARNING_F COLOR_MAGENTA
 #define COLOR_WARNING_B COLOR_RED
 
 /*********************************************************************
