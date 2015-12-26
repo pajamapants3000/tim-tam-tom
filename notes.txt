@@ -212,3 +212,19 @@ draw messsage again - play again? y/n - take input
 130)
 draw messsage again  - say goodbye
 
+Final Outline
+**************
+All of the functions are written, the macros defined; time to put it all
+together!
+
+main:
+define variables
+    WINDOW *msg_win, *board, *panel_win, *title_win;
+    FORM* Prompt_for_Username;
+initialize ncurses
+welcome
+prompt for names
+start game
+repeat turns
+end game
+

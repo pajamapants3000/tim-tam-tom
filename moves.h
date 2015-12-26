@@ -1,10 +1,14 @@
 /*
- * File   : player_move.h
+ * File   : moves.h
  * Program: tim-tam-tom
  * Purpose: logic - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
+ * Notes  : Link with -lncurses
  */
+
+#ifndef GUARD_MOVES_H
+#define GUARD_MOVES_H
 
 #include <stdbool.h>
 #include <ncurses.h>
@@ -34,6 +38,17 @@
     WIN_DGDR, WIN_DGUR }
 #define NUM_WINTYPES 8
 
+#define PRESS_ANY_KEY getch()
+
+// xoro is 0 for O, 1 for X (same as value for mark)
+#define INIT_PLAYER(player, xoro) \
+                   player = (Player*) malloc(sizeof(Player));      \
+                            (player)->mark = xoro;                 \
+                            (player)->is_my_turn = (player)->mark; \
+                            (player)->num_turns_taken = 0;         \
+                            (player)->markers = 0;                 \
+        (player)->name = (char*) malloc(NAME_MAXLEN * sizeof(char))
+
 // squares is a bitmask that is constructed by a set of squares on the board
 typedef unsigned short squares;
 // Player manages all attributes for a given player
@@ -47,12 +62,14 @@ struct player_struct
 };
 typedef struct player_struct Player;
 
-// Header/*{{{*/
+
 /*********************************************************************
  * is_valid_move: checks last_move against previously taken moves    *
  *                and returns false if the move was taken already    *
+ *    Depends on: <stdbool.h>, struct player_struct, Player, squares *
  *********************************************************************/
-bool is_valid_move(Player* playeX, Player* playerO, squares last_move);
+bool is_valid_move(Player* playerX, Player* playerO, squares last_move);
+
 /*********************************************************************
  * update_turns: updates the players' data structs to account for    *
  *               the latest move. Adds argument last_move to the     *
@@ -60,22 +77,30 @@ bool is_valid_move(Player* playeX, Player* playerO, squares last_move);
  *               who made the move, then increments that player's    *
  *               num_turns_taken, and switches each player's         *
  *               is_my_turn value to indicate that it is now the     *
- *               other player's turn.
+ *               other player's turn.                                *
+ *   Depends on: struct player_struct, Player, squares               *
  *********************************************************************/
 void update_turns(Player* playerX, Player* playerO, squares last_move);
+
 /*********************************************************************
  * square_dec_to_bin: takes a single integer (value from 0 to 8      *
  *                    inclusive); converts this value to the binary  *
  *                    mask representing this square and returns it   *
  *********************************************************************/
 squares square_dec_to_bin(int choice);
+
 /*********************************************************************
  * player_wins: checks validated moves by player for winning set     *
+ *  Depends on: <stdbool.h>, struct player_struct, Player, squares   *
  *********************************************************************/
 bool player_wins(Player* player);
+
 /*********************************************************************
  * reached_stalemate: checks validated moves by both players to      *
  *                    determine if all possible moves have been made *
+ *        Depends on: <stdbool.h>, struct player_struct, Player      *
  *********************************************************************/
 bool reached_stalemate(Player* playerX, Player* playerO);
-/*}}}*/
+
+#endif      // end of header guard
+

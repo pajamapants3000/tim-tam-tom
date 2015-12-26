@@ -136,7 +136,7 @@ void draw_pane(WINDOW* pane_win, const Player* playerX, const Player* playerO)/*
     // ******* Print text for each player ******* //
     // *** Active player highlighted in color *** //
     text_y +=print_player_info(pane_win, text_y, playerX, turn_color(playerX));
-    text_y +=print_player_info(pane_win, text_y, playerX, turn_color(playerO));
+    text_y +=print_player_info(pane_win, text_y, playerO, turn_color(playerO));
 
     move(0, 0);
     wrefresh(pane_win);
@@ -193,10 +193,10 @@ void draw_X(WINDOW* board, int y_position, int x_position)/*{{{*/
         // skip center square - where the square number goes!
         if (delta_x == 0)
             continue;
-        ddel_y = (((double) (SQUARE_DIMY-1)) / (SQUARE_DIMX-1)) * abs(delta_x);
+        ddel_y = X_SLOPE * abs(delta_x);    // X_SLOPE has explicit double type
         delta_y = nearbyint(ddel_y);
         mvwaddch(board, y_position + delta_y, x_position + delta_x, ch);
-        ddel_y = -(((double) (SQUARE_DIMY-1)) / (SQUARE_DIMX-1)) * abs(delta_x);
+        ddel_y = -X_SLOPE * abs(delta_x);   // X_SLOPE has explicit double type
         delta_y = nearbyint(ddel_y);
         mvwaddch(board, y_position + delta_y, x_position + delta_x, ch);
     }
@@ -212,9 +212,11 @@ void draw_O(WINDOW* board, int y_position, int x_position)/*{{{*/
 
     for (delta_x = 1 - SQUARE_MIDX; delta_x < SQUARE_MIDX; ++delta_x)
     {
+        // ELLIPSE_PLUSY has explicit double type
         ddel_y = ELLIPSE_PLUSY(delta_x, SQUARE_MIDY, SQUARE_MIDX);
         delta_y = nearbyint(ddel_y);
         mvwaddch(board, y_position + delta_y, x_position + delta_x, ch);
+        // ELLIPSE_PLUSY has explicit double type
         ddel_y = -ELLIPSE_PLUSY(delta_x, SQUARE_MIDY, SQUARE_MIDX);
         delta_y = nearbyint(ddel_y);
         mvwaddch(board, y_position + delta_y, x_position + delta_x, ch);

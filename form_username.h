@@ -4,7 +4,11 @@
  * Purpose: form that prompts for username - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
+ * Notes  : Link with -lform -lncurses
  */
+
+#ifndef GUARD_FORM_USERNAME_H
+#define GUARD_FORM_USERNAME_H
 
 #include <ncurses.h>
 #include <form.h>
@@ -140,4 +144,16 @@ void set_win_subwin_attrs(WINDOW* form_win, WINDOW* form_subwin);
  *********************************************************************/
 void free_form_mem(struct Prompt* Prompt_for_Name);
 
+/*********************************************************************
+ * get_username: Once the prompt is created and displayed, call this *
+ *               function to collect the input, store the result in  *
+ *               the desired char ptr/array, and erase the buffer    *
+ *               to finish up and prepare for the possibility of     *
+ *               collecting another name.                            *
+ *   Depends on: <ncurses.h>, <form.h>, NUM_FIELDS, struct Prompt,   *
+ *               process_input, set_name.                            *
+ *********************************************************************/
+void get_username(struct Prompt* Prompt_for_Name, char* username);
+
+#endif      // end of header guard
 

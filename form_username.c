@@ -98,13 +98,13 @@ bool process_input(FORM* prompt_for_name, chtype ch)/*{{{*/
             }
             break;
         case KB_ENTER:
+            n = 0;
+            pos = 0;
             if (form_driver(prompt_for_name, REQ_VALIDATION)
                     == E_INVALID_FIELD)
             {
                 form_driver(prompt_for_name, REQ_CLR_FIELD);
                 form_driver(prompt_for_name, REQ_BEG_FIELD);
-                n = 0;
-                pos = 0;
                 move(1, 1);
                 printw("Error in entry, try again!");
                 refresh();
@@ -208,3 +208,13 @@ void free_form_mem(struct Prompt* Prompt_for_Name)/*{{{*/
     free(Prompt_for_Name);
 }
 /*}}}*/
+
+void get_username(struct Prompt* Prompt_for_Name, char* username)
+{
+    while (!process_input(Prompt_for_Name->form,
+                wgetch(Prompt_for_Name->form_win)))
+        ;
+    set_name(*(Prompt_for_Name->fields + 1), username);
+    set_field_buffer(Prompt_for_Name->fields[NUM_FIELDS - 1], 0, "");
+}
+
