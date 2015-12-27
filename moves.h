@@ -1,6 +1,6 @@
 /*
  * File   : moves.h
- * Program: tim-tam-tom
+ * Program: tim-tam-tom -- A tic-tac-toe game written in curses
  * Purpose: logic - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE

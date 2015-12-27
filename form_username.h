@@ -1,6 +1,7 @@
 /*
  * File   : form.h
- * Program: tim-tam-tom
+ * Program: tim-tam-tom -- A tic-tac-toe game written in curses
+ * Notes  : Link with -lpanel -lncurses
  * Purpose: form that prompts for username - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE

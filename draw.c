@@ -1,6 +1,6 @@
 /*
  * File   : draw.c
- * Program: tim-tam-tom
+ * Program: tim-tam-tom -- A tic-tac-toe game written in curses
  * Purpose: presentation macros, functions, and structures - lib
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE

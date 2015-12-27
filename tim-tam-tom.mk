@@ -1,6 +1,6 @@
 #+\
 # File   : tim-tam-tom.mk
-# Program: tim-tam-tom
+# Program: tim-tam-tom -- A tic-tac-toe game written in curses
 # Purpose: Makefile for tim-tam-tom
 # Author : Tommy Lincoln <pajamapants3000@gmail.com>
 # License: MIT -- See LICENSE

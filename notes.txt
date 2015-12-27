@@ -1,3 +1,12 @@
+*
+* File   : notes.txt
+* Program: tim-tam-tom -- A tic-tac-toe game written in curses
+* Purpose: notes and planning
+* Author : Tommy Lincoln <pajamapants3000@gmail.com>
+* License: MIT -- See LICENSE
+* Notes  : Not part of the program, just notes on its development
+*
+
 tim-tam-tom - Notes
 ********************
 This should actually be pretty feasible with curses and my current knowledge.

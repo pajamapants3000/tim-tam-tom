@@ -1,73 +1,83 @@
 /*
  * File   : draw.h
- * Program: tim-tam-tom
+ * Program: tim-tam-tom -- A tic-tac-toe game written in curses
  * Purpose: presentation macros, functions, and structures - header
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
- * Notes  : Link with -lm; also -lncurses
+ * Notes  : Link with -lm -lncurses
  */
 
 #ifndef GUARD_DRAW_H
 #define GUARD_DRAW_H
 
 #include <ncurses.h>
-#include "moves.h"                  // for Player
+#include "moves.h"                  // for Player (struct player_struct)
 #include "form_username.h"          // for NAME_MAXLEN
 
+// who's in? //
+#define NUM_PLAYERS 2
+// total screen space to occupy
+#define TOTAL_W 80
+#define TOTAL_H 35
 
-
-// *gameboard dimensions*
-// defining macros
+ /*             *              */
+/***        Gameboard       ***/
+// defining macros -- these may be modified as needed
+// NOTE: (BOARD_H - 1) / BOARD_NUM_SQUARES_Y == integer!
+//+(similarly for BOARD_W and BOARD_NUM_SQUARES_X)
 #define BOARD_NUM_SQUARES_X 3
 #define BOARD_NUM_SQUARES_Y 3
-#define SQUARE_DIMY  8
-#define SQUARE_DIMX 16
-// derived macros
-#define BOARD_H (3 * SQUARE_DIMY + 1)
-#define BOARD_W (3 * SQUARE_DIMX + 1)
+#define BOARD_H 25
+#define BOARD_W 49
+// derived macros -- these should not be changed
+#define SQUARE_DIMY ((BOARD_H - 1) / BOARD_NUM_SQUARES_Y)
+#define SQUARE_DIMX ((BOARD_W - 1) / BOARD_NUM_SQUARES_X)
 #define BOARD_Y (TITLE_WIN_Y + TITLE_WIN_H)
-#define BOARD_X (((COLS  - (BOARD_W + PANE_WIN_W)) / 2) + PANE_WIN_W)
+#define BOARD_X (PANE_WIN_X + PANE_WIN_W)
 #define SQUARE_MIDX (SQUARE_DIMX / 2)
 #define SQUARE_MIDY (SQUARE_DIMY / 2)
 #define STEP_ALONG_CENTERS_Y(i) (BOARD_H - 1 - (SQUARE_MIDY + \
         (SQUARE_DIMY * (i / BOARD_NUM_SQUARES_Y))))
 #define STEP_ALONG_CENTERS_X(i) (SQUARE_MIDX + \
         (SQUARE_DIMX * (i % BOARD_NUM_SQUARES_X)))
-// *                    *
+////////////////////////////////
 
 /* macros to assist in creating X's and O's on the board    */
 /************************************************************/
-// f(x) for f proportional to x; take this and its negative to make the 'X'
+// f(x) proportional to x; take this and its negative to make the 'X'
 #define X_SLOPE ((double) (SQUARE_DIMY - 1) / (SQUARE_DIMX - 1))
 #define X_PLUSY(x, Y, X) ((((double) (Y-1)) / (X-1)) * abs(x))
 //
-// positive values of f(x) for an ellipse centered at origin
-// vertical radius of Ry, horizontal radius of Rx
-// NOTE: I toyed with the parameters a bit; at least for the board size which
-// I tested, raising the second term to 1.5 instead of 2 made a better shape.
+// positive values of f(x) for an ellipse centered at origin (-*modified)
+// Ry = vertical radius; Rx = horizontal radius
+//-*NOTE: I toyed with the parameters a bit; at least for the board size which
+//-*I tested, raising the second term to 1.2 instead of 2 made a better shape.
 #define ELLIPSE_PLUSY(x, Ry, Rx) (sqrt(pow((Ry-1), 2) *\
         (1 - (pow(((double) abs(x)) / (Rx-1), 1.2)))))
 /************************************************************/
-// Here are the explicit point versions:
-#define X_PLUS {}
 
-// message window
-#define MSG_WIN_H  8
-#define MSG_WIN_W 40
-//#define MSG_WIN_Y ((LINES - MSG_WIN_H) / 2)
-#define MSG_WIN_Y 10
-#define MSG_WIN_X ((COLS  - MSG_WIN_W) / 2)
-#define MESSAGE { "Hello, and welcome to the message!",\
-                  "This is line two of the message.",\
-                  ""}
-#define MSG_YSTART 2
+/***        Title Window        ***/
+// do not edit, with the exception of TITLE_WIN_Y;
+//+looks better near the top rather than centered;
+// TITLE_WIN_X and TITLE_WIN_Y fix the positioning
+//+of the entire setup; probably want to leave it
+//+centered on X.
+// this value centers the board vertically;
+//#define TITLE_WIN_Y ((LINES - (BOARD_H + TITLE_WIN_H)) / 2)
+// this is a custom-defined value:
+#define TITLE_WIN_Y 2
+/*      *       */
+#define TITLE_WIN_X ((COLS  - (BOARD_W + PANE_WIN_W)) / 2)
+#define TITLE_WIN_H (TOTAL_H - BOARD_H)
+#define TITLE_WIN_W (BOARD_W + PANE_WIN_W)
+///////////////////////////////////
 
-// pane window
+/***        Side Pane       ***/
+// do not edit
 #define PANE_WIN_H BOARD_H
-#define PANE_WIN_W (80 - BOARD_W)
+#define PANE_WIN_W (TOTAL_W - BOARD_W)
 #define PANE_WIN_Y BOARD_Y
-#define PANE_WIN_X (BOARD_X - PANE_WIN_W)
-#define NUM_PLAYERS 2
+#define PANE_WIN_X TITLE_WIN_X
 #define PLYRNFO_NUM_LINES 2
 #define PLYRNFO_TB_PADDING 2
 // Number of lines devoted to each player in the side info pane
@@ -75,20 +85,27 @@
 #define PLYR_TEXT_SECTION (2 * PLYRNFO_NUM_LINES + 2 * PLYRNFO_TB_PADDING)
 #define PLYR_TEXT_HDR (player->mark ? "Player 1 - X's" : "Player 2 - O's")
 
-// title window
-#define TITLE_WIN_H 10
-#define TITLE_WIN_W (BOARD_W + PANE_WIN_W)
-// this value centers the board vertically
-//#define TITLE_WIN_Y ((LINES - (BOARD_H + TITLE_WIN_H)) / 2)
-#define TITLE_WIN_Y 2
-#define TITLE_WIN_X PANE_WIN_X
-#define TITLE_YSTART 2
-#define TITLE { "Hello, and welcome to the title!",\
-                  "This is line two of the title.",\
-                  ""}
+/***        Message Window          ***/
+// Nothing else depends on these, so do what you will!
+//+just leave enough room for the messages, at
+//+LEAST 4x25
+#define MSG_WIN_H  8
+#define MSG_WIN_W 40
+#define MSG_WIN_Y 10
+#define MSG_WIN_X ((COLS  - MSG_WIN_W) / 2)
 
-#define NUL '\0'
-#define INIT_CURS initscr(); cbreak(); noecho(); start_color(); refresh()
+/***        Colors      ***/
+// edit colors to taste; leave COLOR_PAIR_* alone
+#define COLOR_MYTURN_F  COLOR_BLACK     // left pane info - active player
+#define COLOR_MYTURN_B  COLOR_BLUE      // left pane info - active player
+#define COLOR_WAITING_F COLOR_WHITE     // left pane info - waiting player
+#define COLOR_WAITING_B COLOR_BLACK     // left pane info - waiting player
+#define COLOR_DEFAULT_F COLOR_CYAN      // default colorscheme
+#define COLOR_DEFAULT_B COLOR_BLACK     // default colorscheme
+#define COLOR_TITLE_F   COLOR_BLACK     // main title/heading
+#define COLOR_TITLE_B   COLOR_CYAN      // main title/heading
+#define COLOR_WARNING_F COLOR_MAGENTA   // warning message
+#define COLOR_WARNING_B COLOR_RED       // warning message
 #define COLOR_PAIR_NUM_DEFAULT 1
 #define COLOR_PAIR_NUM_TITLE   2
 #define COLOR_PAIR_NUM_MYTURN  3
@@ -99,16 +116,6 @@
 #define COLOR_PAIR_MYTURN  COLOR_PAIR(COLOR_PAIR_NUM_MYTURN)
 #define COLOR_PAIR_WAITING COLOR_PAIR(COLOR_PAIR_NUM_WAITING)
 #define COLOR_PAIR_WARNING COLOR_PAIR(COLOR_PAIR_NUM_WARNING)
-#define COLOR_MYTURN_F  COLOR_BLACK
-#define COLOR_MYTURN_B  COLOR_BLUE
-#define COLOR_WAITING_F COLOR_WHITE
-#define COLOR_WAITING_B COLOR_BLACK
-#define COLOR_DEFAULT_F COLOR_WHITE
-#define COLOR_DEFAULT_B COLOR_BLACK
-#define COLOR_TITLE_F COLOR_WHITE
-#define COLOR_TITLE_B COLOR_BLACK
-#define COLOR_WARNING_F COLOR_MAGENTA
-#define COLOR_WARNING_B COLOR_RED
 
 /*********************************************************************
  * draw_board: draws the tic-tac-toe 3x3 board, with optional        *

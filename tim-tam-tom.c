@@ -1,10 +1,10 @@
 /*
  * File   : tim-tam-tom.c
- * Program: tim-tam-tom
+ * Program: tim-tam-tom -- A tic-tac-toe game written in curses
  * Purpose: A tic-tac-toe game!
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT - See LICENSE
- * Notes  : With draw.h, link with -lm; also link with -lform -lncurses;
+ * Notes  : Link with -lm -lform -lncurses;
  */
 
 #include <stdlib.h>
@@ -31,7 +31,7 @@
 #define MSG_TITLE {                                   \
 "  =======   =======      =======       ",            \
 "     |         | _          | _        ",            \
-"     |x|/\\ /\\ox|/ \\ |/\\ /\\ox|/o\\|/\\ /\\ ",    \
+"     |x|/\\ /\\ox|/o\\ |/\\x/\\ox|/o\\|/\\ /\\ ",    \
 "     |||  \\  \\ |\\_/\\|  \\  \\ |\\_/|  \\  \\", "" }
 
 #define MSG_WARNING { "Uh-oh!", "You have pressed an invalid key.", ""}
@@ -101,6 +101,14 @@ int main(void)
                     playerX->mark : playerO->mark);
             update_turns(playerX, playerO, square_dec_to_bin(input - '1'));
         }
+        else if (input == 'q' || input == 'Q')
+        {
+            draw_msg(msg_win, msg_goodbye, COLOR_PAIR_MYTURN);
+            PRESS_ANY_KEY;
+            free_form_mem(Prompt_for_Name);
+            endwin();
+            return 0;
+        }
         else
         {
             draw_msg(msg_win, msg_warning, COLOR_PAIR_WARNING);
@@ -139,6 +147,7 @@ int main(void)
         break;
   }
 
+    free_form_mem(Prompt_for_Name);
     draw_msg(msg_win, msg_goodbye, COLOR_PAIR_DEFAULT);
     endwin();
 

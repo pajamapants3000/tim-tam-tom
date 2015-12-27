@@ -1,9 +1,10 @@
 /*
  * File   : form.c
- * Program: tim-tam-tom
+ * Program: tim-tam-tom -- A tic-tac-toe game written in curses
  * Purpose: form that prompts for username - lib
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
+ * Notes  : Link with -lpanel -lncurses
  */
 
 #include <ctype.h>

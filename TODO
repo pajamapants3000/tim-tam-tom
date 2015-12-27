@@ -1,0 +1,13 @@
+*
+* File   : TODO
+* Program: tim-tam-tom -- A tic-tac-toe game written in curses
+* Purpose: To-do list
+* Author : Tommy Lincoln <pajamapants3000@gmail.com>
+* License: MIT -- See LICENSE
+* Notes  : Not part of the program, just notes on its development
+*
+
+Tim-Tam-Tom -- TODO list
+*************************
+Keep track of wins; add this to the side pane
+
