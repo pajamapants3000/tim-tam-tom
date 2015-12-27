@@ -11,11 +11,15 @@ CC = gcc
 CFLAGS = -march=native -O2 -Wall -std=gnu11
 CXX = g++
 CXXFLAGS = -march=native -O2 -Wall -std=gnu++11
-CPPFLAGS = -I.
+CPPFLAGS = -I. -I./include
 LDFLAGS = -lm -lform -lncurses
 
 # Make variables
 VPATH =
+BINDIR = bin
+LIBDIR = lib
+INCDIR = include
+OBJDIR = .obj
 
 # Shell Commands
 RM_FILE = rm -vf
@@ -28,23 +32,29 @@ INST_DIR = install -dm755 -o root -g root -v
 INST_USRFILE = install -Dm644 -o $$USER -g $$USER -v
 INST_USRBIN = install -Dm755 -o $$USER -g $$USER -v
 INST_USRDIR = install -dm755 -o $$USER -g $$USER -v
-MKDIR = mkdir -v
+MKDIR = mkdir -pv
 
 # Program Sources and Dependencies
-SOURCES = tim-tam-tom.c moves.c draw.c form_username.c
-OBJ = $(SOURCES:.cxx=.o)
-HDRS = moves.h draw.h form_username.h
-BINFILE = tim-tam-tom
+SRC = tim-tam-tom.c moves.c draw.c form_username.c
+_OBJ = $(SRC:.c=.o)
+OBJ = $(patsubst %,$(OBJDIR)/%,$(_OBJ))
+_HDRS = moves.h draw.h form_username.h
+HDRS = $(patsubst %,$(INCDIR)/%,$(_HDRS))
+_BIN = tim-tam-tom
+BIN = $(patsubst %,$(BINDIR)/%,$(_BIN))
 
-$(BINFILE): $(OBJ) $(HDRS)
+$(BIN): $(OBJ) $(HDRS)
 	@echo
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $(OBJ) $(LDFLAGS)
+	$(MKDIR) $(BINDIR)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $(OBJ) $(LDFLAGS)
 
-%.o: %.cxx $(HDRS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+$(OBJDIR)/%.o: %.c $(HDRS)
+	@echo
+	$(MKDIR) $(OBJDIR)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 .PHONY: clean
 
 clean:
-	$(RM_FILE) $(OBJ) $(BINFILE)
+	$(RM_FILE) $(OBJ) $(BIN)
 

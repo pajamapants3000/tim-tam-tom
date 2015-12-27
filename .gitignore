@@ -8,3 +8,7 @@ R_n_D/simple_form
 R_n_D/simpler_form
 tim-tam-tom
 *.o
+.obj
+bin
+lib
+

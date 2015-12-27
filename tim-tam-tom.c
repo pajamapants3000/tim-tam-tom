@@ -24,7 +24,8 @@
                 playerX->num_turns_taken = 0;        \
                 playerO->num_turns_taken = 0;        \
                 playerX->is_my_turn = playerX->mark; \
-                playerO->is_my_turn = playerO->mark
+                playerO->is_my_turn = playerO->mark; \
+                gameover = false
 #define MSG_WELCOME { "Welcome to Tim-Tam-Tom...", \
                       "Get ready to have FUN!!!",  \
                       ""}
@@ -38,6 +39,9 @@
 #define MSG_GOODBYE { "Thanks for playing...", "See you again soon!", ""}
 #define MSG_STALE  { "You're both out of moves...", " ", "Stalemate!", ""}
 #define MSG_PLAYAGAIN  { "Play", "Again?", "(press 'y'!)", ""}
+#define MSG_ENDGAME  { "Are you sure you want", \
+                       "to end this game?",     \
+                       "(press 'y/N')", ""}
 
 void winner(Player* winner, Player* loser);
 void stalemate();
@@ -48,6 +52,7 @@ int main(void)
     struct Prompt* Prompt_for_Name;
     Player *playerX, *playerO;
     char input;
+    bool gameover = false;
 
     INIT_PLAYER(playerX, 1);
     INIT_PLAYER(playerO, 0);
@@ -56,6 +61,7 @@ int main(void)
     const char* msg_goodbye  [] = MSG_GOODBYE;
     const char* msg_warning  [] = MSG_WARNING;
     const char* msg_playagain[] = MSG_PLAYAGAIN;
+    const char* msg_endgame  [] = MSG_ENDGAME;
 
     INIT_CURS;
     init_pair(COLOR_PAIR_NUM_DEFAULT, COLOR_DEFAULT_F, COLOR_DEFAULT_B);
@@ -93,47 +99,64 @@ int main(void)
     REDRAW;
     while ((input = getch()))
     {
-        // (input - '1') converts 1-9 char to 0-8 int
-        if ('1' <= input && input <= '9' &&
-            is_valid_move(playerX, playerO, square_dec_to_bin(input - '1')))
+        switch (input)
         {
-            leave_mark(board, input - '1', playerX->is_my_turn ? \
-                    playerX->mark : playerO->mark);
-            update_turns(playerX, playerO, square_dec_to_bin(input - '1'));
+        case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+            // (input - '1') converts 1-9 char to 0-8 int
+            if (is_valid_move(playerX, playerO, square_dec_to_bin(input-'1')))
+            {
+                leave_mark(board, input - '1', playerX->is_my_turn ? \
+                        playerX->mark : playerO->mark);
+                update_turns(playerX, playerO, square_dec_to_bin(input - '1'));
+                // NOTE: last player to move now has is_my_turn == false
+                if (player_wins(playerX->is_my_turn ? playerO : playerX))
+                {
+                    winner(playerX->is_my_turn ? playerO : playerX,
+                           playerX->is_my_turn ? playerX : playerO);
+                    gameover = true;
+                }
+                else if (reached_stalemate(playerX, playerO))
+                {
+                    stalemate();
+                    gameover = true;
+                }
+            }
+            else    // warn user of invalid move
+            {
+                draw_msg(msg_win, msg_warning, COLOR_PAIR_WARNING);
+                PRESS_ANY_KEY;
+                werase(msg_win);
+                wrefresh(msg_win);
+                REDRAW;
+                continue;
+            }
+            break;
+        case 'q': case 'Q':
+                draw_msg(msg_win, msg_goodbye, COLOR_PAIR_MYTURN);
+                PRESS_ANY_KEY;
+                free_form_mem(Prompt_for_Name);
+                endwin();
+                return 0;
+        case 'n': case 'N':
+                draw_msg(msg_win, msg_endgame, COLOR_PAIR_DEFAULT);
+                input = getch();
+                werase(msg_win);
+                wrefresh(msg_win);
+                if (input == 'y' || input == 'Y')
+                {
+                    gameover = true;
+                    break;
+                }
+                else
+                    break;
         }
-        else if (input == 'q' || input == 'Q')
-        {
-            draw_msg(msg_win, msg_goodbye, COLOR_PAIR_MYTURN);
-            PRESS_ANY_KEY;
-            free_form_mem(Prompt_for_Name);
-            endwin();
-            return 0;
-        }
+        if (gameover)
+            break;
         else
-        {
-            draw_msg(msg_win, msg_warning, COLOR_PAIR_WARNING);
-            PRESS_ANY_KEY;
-            werase(msg_win);
-            wrefresh(msg_win);
             REDRAW;
-            continue;
-        }
-
-        // NOTE: last player to move now has is_my_turn == false
-        if (player_wins(playerX->is_my_turn ? playerO : playerX))
-        {
-            winner(playerX->is_my_turn ? playerO : playerX,
-                   playerX->is_my_turn ? playerX : playerO);
-            break;
-        }
-        else if (reached_stalemate(playerX, playerO))
-        {
-            stalemate();
-            break;
-        }
-        REDRAW;
     }
-
+    // ask users if they want to play another game
     draw_msg(msg_win, msg_playagain, COLOR_PAIR_DEFAULT);
     input = getch();
     werase(msg_win);

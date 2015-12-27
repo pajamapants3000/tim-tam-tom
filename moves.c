@@ -4,7 +4,7 @@
  * Purpose: logic - lib
  * Author : Tommy Lincoln <pajamapants3000@gmail.com>
  * License: MIT -- See LICENSE
- * Notes  : 
+ * Notes  :
  */
 
 #include <stdbool.h>
