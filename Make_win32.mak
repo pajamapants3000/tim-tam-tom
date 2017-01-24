@@ -4,14 +4,15 @@
 # Purpose: Makefile for tim-tam-tom
 # Author : Tommy Lincoln <pajamapants3000@gmail.com>
 # Notes  : Use this makefile for win32 systems; deps: NCurses
+# 		 : 	I don't think this works at the moment - sorry!
 # License: MIT -- See LICENSE
 #+/
 
 # Compiler Flags
 CC = gcc
-CFLAGS += -march=native -O2 -Wall -std=gnu11
-CPPFLAGS += -I. -I./include
-LDFLAGS += -lm -lform -lncurses
+CFLAGS := -march=native -O2 -Wall -std=gnu11 $(CFLAGS)
+CXXFLAGS := -march=native -O2 -Wall -std=gnu++11 $(CXXFLAGS)
+LDFLAGS := -lm -lform -lncurses -lregex $(LDFLAGS)
 
 # Make variables
 VPATH  =
@@ -20,7 +21,7 @@ LIBDIR = lib
 INCDIR = include
 OBJDIR = .obj
 
-# Shell Commands
+# Shell Commands (WIP)
 RM_FILE   = del
 RM_DIR    = del /S
 CP_FILE   = copy

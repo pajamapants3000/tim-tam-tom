@@ -8,11 +8,11 @@
 
 # Compiler Flags
 CC = gcc
-CFLAGS = -march=native -O2 -Wall -std=gnu11
+CFLAGS := -march=native -O2 -Wall -std=gnu11 $(CFLAGS)
 CXX = g++
-CXXFLAGS = -march=native -O2 -Wall -std=gnu++11
-CPPFLAGS = -I. -I./include
-LDFLAGS = -lm -lform -lncurses
+CXXFLAGS := -march=native -O2 -Wall -std=gnu++11 $(CXXFLAGS)
+CPPFLAGS := -I. -I./include $(CPPFLAGS)
+LDFLAGS := -lm -lform -lncurses $(LDFLAGS)
 
 # Make variables
 VPATH =
