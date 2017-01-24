@@ -3,14 +3,15 @@
 # Program: tim-tam-tom -- A tic-tac-toe game written in curses
 # Purpose: Makefile for tim-tam-tom
 # Author : Tommy Lincoln <pajamapants3000@gmail.com>
+# Notes  : Use this makefile for win32 systems; deps: NCurses
 # License: MIT -- See LICENSE
 #+/
 
 # Compiler Flags
 CC = gcc
-CFLAGS = -march=native -O2 -Wall -std=gnu11 $(CFLAGS)
-CPPFLAGS = $(CPPFLAGS) -I. -I./include
-LDFLAGS = $(LDFLAGS) -lm -lform -lncurses
+CFLAGS += -march=native -O2 -Wall -std=gnu11
+CPPFLAGS += -I. -I./include
+LDFLAGS += -lm -lform -lncurses
 
 # Make variables
 VPATH  =
