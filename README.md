@@ -10,6 +10,10 @@ I hope to get a Windows build at some point that is reliable. I have gotten
 it to work before, but it's not as clean as I would like it. Perhaps using
 pdcurses in place of NCurses... I don't know.
 ***
+UPDATE 3/2/2017
+Added MSYS2 makefile. Install MSYS2, use pacman to add gcc, ncurses, ncurses-devel, and make, then run `make -f Make_msys2.mak` and you're all good.
+
+***
 
 UPDATE 1/27/2017
 I just successfully built and played tim-tam-tom on the new Bash for Windows, available on Windows 10. I had gcc, make, libncurses5, and libncurses5-dev installed:
