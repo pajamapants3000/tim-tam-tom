@@ -1,5 +1,5 @@
 #+\
-# File   : Makefile.mk
+# File   : Make_msys2.mk
 # Program: tim-tam-tom -- A tic-tac-toe game written in curses
 # Purpose: Makefile for tim-tam-tom
 # Author : Tommy Lincoln <pajamapants3000@gmail.com>
@@ -11,8 +11,8 @@ CC = gcc
 CFLAGS := -march=native -O2 -Wall -std=gnu11 $(CFLAGS)
 CXX = g++
 CXXFLAGS := -march=native -O2 -Wall -std=gnu++11 $(CXXFLAGS)
-CPPFLAGS := -I. -I./include $(CPPFLAGS)
-LDFLAGS := -lm -lform -lncurses $(LDFLAGS)
+CPPFLAGS := -I. -I./include -I/usr/include/ncurses $(CPPFLAGS)
+LDFLAGS := -lm -lformw -lncurses $(LDFLAGS)
 
 # Make variables
 VPATH =
@@ -57,4 +57,5 @@ $(OBJDIR)/%.o: %.c $(HDRS)
 
 clean:
 	$(RM_FILE) $(OBJ) $(BIN)
+
 
